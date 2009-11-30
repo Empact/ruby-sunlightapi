@@ -120,30 +120,19 @@ module Sunlight
       #   legislators = Sunlight::Legislator.search_by_name("Teddy Kennedey")
       #   legislators = Sunlight::Legislator.search_by_name("Johnny Kerry", 0.9)
       #
-      def search_by_name(name, threshold='0.8')
+      def search_by_name(name, threshold = 0.8)
       
         url = construct_url("legislators.search", {:name => name, :threshold => threshold})
       
         if (response = get_json_data(url))
         
-          legislators = []
-          response["response"]["results"].each do |result|
-            if result
-              legislator = Legislator.new(result["result"]["legislator"])
-              fuzzy_score = result["result"]["score"]
-            
-              if threshold.to_f < fuzzy_score.to_f
-                legislator.fuzzy_score = fuzzy_score.to_f
-                legislators << legislator
-              end
-            end
+          legislators = response["response"]["results"].compact.map do |result|
+            Legislator.new(result["result"]["legislator"].merge("fuzzy_score" => result["result"]["score"].to_f))
+          end.select do |legislator|
+            legislator.fuzzy_score.to_f > threshold.to_f
           end
         
-          if legislators.empty?
-            nil
-          else
-            legislators 
-          end
+          legislators unless legislators.empty?
         end
       
       end # def self.search_by_name
