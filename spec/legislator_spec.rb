@@ -94,29 +94,6 @@ describe Sunlight::Legislator do
 
   end
 
-  describe "#all" do
-
-    it "should return nil when junk is passed in" do
-      legislators = Sunlight::Legislator.all(:bleh => 'blah')
-      legislators.should be(nil)
-    end
-
-    it "should return hash when valid lat/long are passed in" do
-      Sunlight::Legislator.should_receive(:all_in_district).and_return(@example_legislators)
-
-      legislators = Sunlight::Legislator.all(:latitude => 33.876145, :longitude => -84.453789)
-      legislators[:senior_senator].firstname.should eql('Jan')
-    end
-
-    it "should return hash when valid address is passed in" do
-      Sunlight::Legislator.should_receive(:all_in_district).and_return(@example_legislators)
-
-      legislators = Sunlight::Legislator.all(:address => "123 Fake St Anytown USA")
-      legislators[:junior_senator].firstname.should eql('Bob')
-    end
-
-  end
-
   describe "#all_in_district" do
 
     it "should return has when valid District object is passed in" do
@@ -143,6 +120,24 @@ describe Sunlight::Legislator do
       Sunlight::Legislator.should_receive(:get_json_data).and_return(nil)
 
       legislators = Sunlight::Legislator.all_where(:blah => "Blech")
+      legislators.should be(nil)
+    end
+
+  end
+
+  describe "#all" do
+
+    it "should return array when valid parameters passed in" do
+      Sunlight::Legislator.should_receive(:get_json_data).and_return({"response"=>{"legislators"=>[{"legislator"=>{"state"=>"GA"}}]}})
+
+      legislators = Sunlight::Legislator.all(:firstname => "Susie")
+      legislators.first.state.should eql('GA')
+    end
+
+    it "should return nil when unknown parameters passed in" do
+      Sunlight::Legislator.should_receive(:get_json_data).and_return(nil)
+
+      legislators = Sunlight::Legislator.all(:blah => "Blech")
       legislators.should be(nil)
     end
 

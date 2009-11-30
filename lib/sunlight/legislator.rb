@@ -32,7 +32,6 @@ module Sunlight
           nil # appropriate params not found
         end
       end
-      alias_method :all, :all_for
 
       #
       # A helper method for all_for. Use that instead, unless you 
@@ -82,8 +81,8 @@ module Sunlight
         else  
           nil
         end # if response.class
-
       end
+      alias_method :all, :all_where
     
       #
       # When you only have a zipcode (and could not get address from the user), use this.
