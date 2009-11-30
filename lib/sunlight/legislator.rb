@@ -23,14 +23,8 @@ module Sunlight
       #   Sunlight::Legislator.all_for(:address => "90210") # it'll work, but use all_in_zip instead
       #
       def all_for(params)
-
-        if (params[:latitude] and params[:longitude])
-          Legislator.all_in_district(District.get(:latitude => params[:latitude], :longitude => params[:longitude]))
-        elsif (params[:address])
-          Legislator.all_in_district(District.get(:address => params[:address]))
-        else
-          nil # appropriate params not found
-        end
+        district = District.get(params)
+        Legislator.all_in_district(district) if district
       end
 
       #
