@@ -22,19 +22,42 @@ describe Sunlight::Lobbyist do
   describe "#search_by_name" do
     
     it "should return array when probable match passed in with no threshold" do
-      Sunlight::Lobbyist.should_receive(:get_json_data).and_return({"response"=>{"results"=>[{"result"=>{"score"=>"0.91", "lobbyist"=>{"firstname"=>"Edward"}}}]}})
+      Sunlight::Lobbyist.should_receive(:get_json_data).and_return({
+        "response"=>{"results"=>[
+          {"result"=>{"score"=>"0.93", "lobbyist"=>{"firstname"=>"Bobby"}}},
+          {"result"=>{"score"=>"0.89", "lobbyist"=>{"firstname"=>"Jackie"}}},
+          {"result"=>{"score"=>"0.97", "lobbyist"=>{"firstname"=>"Edward"}}},
+          {"result"=>{"score"=>"0.91", "lobbyist"=>{"firstname"=>"Ricky"}}}
+        ]}
+      })
       
-      lobbyists = Sunlight::Lobbyist.search_by_name("Teddy Kennedey")
-      lobbyists.first.fuzzy_score.should eql(0.91)
-      lobbyists.first.firstname.should eql('Edward')
+      @lobbyists = Sunlight::Lobbyist.search_by_name("Teddy Kennedey")
+      @lobbyists.first.fuzzy_score.should eql(0.97)
+      @lobbyists.first.firstname.should eql('Edward')
     end
-    
-    it "should return an array when probable match passed in is over supplied threshold" do
-      Sunlight::Lobbyist.should_receive(:get_json_data).and_return({"response"=>{"results"=>[{"result"=>{"score"=>"0.91", "lobbyist"=>{"firstname"=>"Edward"}}}]}})
 
-      lobbyists = Sunlight::Lobbyist.search_by_name("Teddy Kennedey", 0.9)
-      lobbyists.first.fuzzy_score.should eql(0.91)
-      lobbyists.first.firstname.should eql('Edward')
+    context "when multiple results match over the supplied threshold" do
+      before do
+        Sunlight::Lobbyist.should_receive(:get_json_data).and_return({
+          "response"=>{"results"=>[
+            {"result"=>{"score"=>"0.93", "lobbyist"=>{"firstname"=>"Bobby"}}},
+            {"result"=>{"score"=>"0.89", "lobbyist"=>{"firstname"=>"Jackie"}}},
+            {"result"=>{"score"=>"0.97", "lobbyist"=>{"firstname"=>"Edward"}}},
+            {"result"=>{"score"=>"0.91", "lobbyist"=>{"firstname"=>"Ricky"}}}
+          ]}
+        })
+
+        @lobbyists = Sunlight::Lobbyist.search_by_name("Teddy Kennedey", 0.9)
+      end
+
+      it "should return an array when probable match passed in is over supplied threshold" do
+        @lobbyists.first.fuzzy_score.should eql(0.97)
+        @lobbyists.first.firstname.should eql('Edward')
+      end
+
+      it "should sort the results by fuzzy match" do
+        @lobbyists.should == @lobbyists.sort_by(&:fuzzy_score).reverse
+      end
     end
     
     it "should return nil when probable match passed in but underneath supplied threshold" do

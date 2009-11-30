@@ -23,7 +23,7 @@ module Sunlight
     #
     # Returns:
     #
-    # An array of Lobbyists, with the fuzzy_score set as an attribute
+    # An array of Lobbyists, sorted by the fuzzy_score attribute
     #
     # Usage:
     #
@@ -39,7 +39,7 @@ module Sunlight
           Lobbyist.new(result["result"]["lobbyist"].merge("fuzzy_score" => result["result"]["score"].to_f))
         end.select do |lobbyist|
           lobbyist.fuzzy_score.to_f > threshold.to_f
-        end
+        end.sort_by {|l| l.fuzzy_score }.reverse
       
         lobbyists unless lobbyists.empty?
       end
