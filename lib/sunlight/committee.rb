@@ -10,15 +10,13 @@ module Sunlight
         case key
 
         when 'subcommittees'
-          self.subcommittees = []
-          value.each do |subcommittee|
-            self.subcommittees << Sunlight::Committee.new(subcommittee["committee"])
+          self.subcommittees = value.map do |subcommittee|
+            Sunlight::Committee.new(subcommittee["committee"])
           end
           
         when 'members'
-          self.members = []
-          value.each do |legislator|
-            self.members << Sunlight::Legislator.new(legislator["legislator"])
+          self.members = value.map do |legislator|
+            Sunlight::Legislator.new(legislator["legislator"])
           end
     
         else
@@ -41,8 +39,6 @@ module Sunlight
       
       if (result = get_json_data(url))
         committee = Committee.new(result["response"]["committee"])
-      else
-        nil # appropriate params not found
       end
 
     end
@@ -60,15 +56,10 @@ module Sunlight
       url = construct_url("committees.getList", {:chamber=> chamber})
       
       if (result = get_json_data(url))
-        committees = []
-        result["response"]["committees"].each do |committee|
-          committees << Committee.new(committee["committee"])
+        result["response"]["committees"].map do |committee|
+          Committee.new(committee["committee"])
         end
-      else
-        nil # appropriate params not found
       end
-      
-      committees
       
     end
 
