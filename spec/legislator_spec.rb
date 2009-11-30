@@ -172,12 +172,27 @@ describe Sunlight::Legislator do
       legislators.first.firstname.should eql('Edward')
     end
     
-    it "should return an array when probable match passed in is over supplied threshold" do
-      Sunlight::Legislator.should_receive(:get_json_data).and_return({"response"=>{"results"=>[{"result"=>{"score"=>"0.91", "legislator"=>{"firstname"=>"Edward"}}}]}})
+    context "when probable matches are over the supplied threshold" do
+      before do
+        Sunlight::Legislator.should_receive(:get_json_data).and_return({
+          "response"=>{"results"=>[
+            {"result"=>{"score"=>"0.91", "legislator"=>{"firstname"=>"Jessie"}}},
+            {"result"=>{"score"=>"0.94", "legislator"=>{"firstname"=>"Edward"}}},
+            {"result"=>{"score"=>"0.92", "legislator"=>{"firstname"=>"Bob"}}}
+          ]}
+        })
     
-      legislators = Sunlight::Legislator.search_by_name("Teddy Kennedey", 0.9)
-      legislators.first.fuzzy_score.should eql(0.91)
-      legislators.first.firstname.should eql('Edward')
+        @legislators = Sunlight::Legislator.search_by_name("Teddy Kennedey", 0.9)
+      end
+
+      it "should return an array of matches" do
+        @legislators.first.fuzzy_score.should eql(0.94)
+        @legislators.first.firstname.should eql('Edward')
+      end
+    
+      it "should sort the matches by score" do
+        @legislators.should == @legislators.sort_by(&:fuzzy_score).reverse
+      end
     end
     
     it "should return nil when probable match passed in but underneath supplied threshold" do

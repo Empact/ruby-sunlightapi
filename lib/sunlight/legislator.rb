@@ -113,7 +113,7 @@ module Sunlight
       #
       # Returns:
       #
-      # An array of Legislators, with the fuzzy_score set as an attribute
+      # An array of Legislators, sorted by the fuzzy_score attribute
       #
       # Usage:
       #
@@ -125,12 +125,11 @@ module Sunlight
         url = construct_url("legislators.search", {:name => name, :threshold => threshold})
       
         if (response = get_json_data(url))
-        
           legislators = response["response"]["results"].compact.map do |result|
             Legislator.new(result["result"]["legislator"].merge("fuzzy_score" => result["result"]["score"].to_f))
           end.select do |legislator|
             legislator.fuzzy_score.to_f > threshold.to_f
-          end
+          end.sort_by {|l| l.fuzzy_score }.reverse
         
           legislators unless legislators.empty?
         end
