@@ -33,14 +33,12 @@ module Sunlight
       url = Sunlight::Base.construct_url("committees.allForLegislator", {:bioguide_id => self.bioguide_id})
 
        if (result = Sunlight::Base.get_json_data(url))
-         committees = []
-         result["response"]["committees"].each do |committee|
-           committees << Sunlight::Committee.new(committee["committee"])
+         result["response"]["committees"].map do |committee|
+           Sunlight::Committee.new(committee["committee"])
          end
        else
          nil # appropriate params not found
        end
-       committees
     end
 
 
@@ -118,12 +116,9 @@ module Sunlight
 
       if (result = get_json_data(url))
 
-        legislators = []
-        result["response"]["legislators"].each do |legislator|
-          legislators << Legislator.new(legislator["legislator"])
+        result["response"]["legislators"].map do |legislator|
+          Legislator.new(legislator["legislator"])
         end
-
-        legislators
 
       else  
         nil
@@ -152,14 +147,9 @@ module Sunlight
       url = construct_url("legislators.allForZip", {:zip => zipcode})
       
       if (result = get_json_data(url))
-
-        legislators = []
-        result["response"]["legislators"].each do |legislator|
-          legislators << Legislator.new(legislator["legislator"])
+        result["response"]["legislators"].map do |legislator|
+          Legislator.new(legislator["legislator"])
         end
-
-        legislators
-
       else  
         nil
       end # if response.class
