@@ -72,9 +72,10 @@ module Sunlight
       else
         nil # appropriate params not found
       end
-
     end
-
+    class << self
+      alias_method :all, :all_for
+    end
 
     #
     # A helper method for all_for. Use that instead, unless you 
