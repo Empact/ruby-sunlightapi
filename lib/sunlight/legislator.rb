@@ -72,15 +72,11 @@ module Sunlight
 
         url = construct_url("legislators.getList", params)
 
-        if (result = get_json_data(url))
-
+        if result = get_json_data(url)
           result["response"]["legislators"].map do |legislator|
             Legislator.new(legislator["legislator"])
           end
-
-        else  
-          nil
-        end # if response.class
+        end
       end
       alias_method :all, :all_where
     
@@ -104,14 +100,11 @@ module Sunlight
 
         url = construct_url("legislators.allForZip", {:zip => zipcode})
       
-        if (result = get_json_data(url))
+        if result = get_json_data(url)
           result["response"]["legislators"].map do |legislator|
             Legislator.new(legislator["legislator"])
           end
-        else  
-          nil
-        end # if response.class
-
+        end
       end # def self.all_in_zipcode
     
     
@@ -157,9 +150,6 @@ module Sunlight
           else
             legislators 
           end
-        
-        else
-          nil
         end
       
       end # def self.search_by_name
@@ -194,13 +184,11 @@ module Sunlight
     def committees
       url = Sunlight::Base.construct_url("committees.allForLegislator", {:bioguide_id => self.bioguide_id})
 
-       if (result = Sunlight::Base.get_json_data(url))
-         result["response"]["committees"].map do |committee|
-           Sunlight::Committee.new(committee["committee"])
-         end
-       else
-         nil # appropriate params not found
-       end
+      if result = Sunlight::Base.get_json_data(url)
+        result["response"]["committees"].map do |committee|
+          Sunlight::Committee.new(committee["committee"])
+        end
+      end
     end
     
   end # class Legislator
