@@ -140,7 +140,45 @@ describe Sunlight::Legislator do
       legislators = Sunlight::Legislator.all(:blah => "Blech")
       legislators.should be(nil)
     end
+  end
 
+  describe "#find" do
+    context "when there is a corresponding legislator" do
+      it "should return that legislator" do
+        Sunlight::Legislator.should_receive(:get_json_data).and_return({
+          "response" => {"legislator" => {
+            "district"=> "4",
+            "title"=> "Rep",
+            "eventful_id"=> "P0-001-000016562-5",
+            "state"=> "NC",
+            "votesmart_id"=> "119",
+            "party"=> "D",
+            "email"=> "",
+            "crp_id"=> "N00002260",
+            "website"=> "http://price.house.gov/",
+            "fax"=> "202-225-2014",
+            "govtrack_id"=> "400326",
+            "firstname"=> "David",
+            "middlename"=> "Eugene",
+            "lastname"=> "Price",
+            "congress_office"=> "2162 Rayburn House Office Building",
+            "bioguide_id"=> "P000523",
+            "webform"=> "http://price.house.gov/contact/contact_form.shtml",
+            "nickname"=> "",
+            "phone"=> "202-225-1784",
+            "fec_id"=> "H6NC04037",
+            "gender"=> "M",
+            "name_suffix"=> "",
+            "sunlight_old_id"=> "fakeopenID319",
+            "congresspedia_url"=> "http://www.sourcewatch.org/index.php?title=David_Price"
+          }}
+        })
+
+        legislator = Sunlight::Legislator.find(:state => 'NC', :district => 4)
+        legislator.votesmart_id.should == "119"
+        legislator.website.should == "http://price.house.gov/"
+      end
+    end
   end
   
   describe "#all_in_zipcode" do
