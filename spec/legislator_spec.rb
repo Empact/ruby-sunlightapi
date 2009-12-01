@@ -79,6 +79,7 @@ describe Sunlight::Legislator do
     end
 
     it "should return hash when valid lat/long are passed in" do
+      Sunlight::District.should_receive(:get).and_return(Sunlight::District.new('TX', 5))
       Sunlight::Legislator.should_receive(:all_in_district).and_return(@example_legislators)
 
       legislators = Sunlight::Legislator.all_for(:latitude => 33.876145, :longitude => -84.453789)
@@ -86,6 +87,7 @@ describe Sunlight::Legislator do
     end
 
     it "should return hash when valid address is passed in" do
+      Sunlight::District.should_receive(:get).and_return(Sunlight::District.new('TX', 5))
       Sunlight::Legislator.should_receive(:all_in_district).and_return(@example_legislators)
 
       legislators = Sunlight::Legislator.all_for(:address => "123 Fake St Anytown USA")
