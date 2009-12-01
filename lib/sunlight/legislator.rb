@@ -187,13 +187,7 @@ module Sunlight
     # An array of Committee objects, each possibly
     # having its own subarray of subcommittees
     def committees
-      url = Sunlight::Base.construct_url("committees.allForLegislator", {:bioguide_id => self.bioguide_id})
-
-      if result = Sunlight::Base.get_json_data(url)
-        result["response"]["committees"].map do |committee|
-          Sunlight::Committee.new(committee["committee"])
-        end
-      end
+      Committee.all_for_legislator(self)
     end
     
   end # class Legislator

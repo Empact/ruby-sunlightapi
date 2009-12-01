@@ -91,4 +91,31 @@ describe Sunlight::Committee do
     
   end
   
+  describe "#all_for_legislator" do
+    before do
+      @example_committee = {"chamber" => "Joint", "id" => "JSPR", "name" => "Joint Committee on Printing", 
+                                                                                  "members" => [{"legislator" => {"state" => "GA"}}],
+                                                                                  "subcommittees" => [{"committee" => {"chamber" => "Joint", "id" => "JSPR", "name" => "Subcommittee on Ink"}}]}
+      @legislator = Sunlight::Legislator.new({"webform"=>"https://forms.house.gov/wyr/welcome.shtml", "title"=>"Rep", "nickname"=>"", "eventful_id"=>"P0-001-000016482-0", "district"=>"4", "congresspedia_url"=>"http://www.sourcewatch.org/index.php?title=Carolyn_McCarthy", "fec_id"=>"H6NY04112", "middlename"=>"", "gender"=>"F", "congress_office"=>"106 Cannon House Office Building", "lastname"=>"McCarthy", "crp_id"=>"N00001148", "bioguide_id"=>"M000309", "name_suffix"=>"", "phone"=>"202-225-5516", "firstname"=>"Carolyn", "govtrack_id"=>"400257", "fax"=>"202-225-5758", "website"=>"http://carolynmccarthy.house.gov/", "votesmart_id"=>"693", "sunlight_old_id"=>"fakeopenID252", "party"=>"D", "email"=>"", "state"=>"NY"})
+    end
+
+    it "should return an array of Committees with subarrays for subcommittees" do
+      Sunlight::Base.should_receive(:get_json_data).and_return({
+        "response" => {"committees" => [
+          {"committee" => @example_committee}
+        ]}
+      })
+
+      comms = Sunlight::Committee.all_for_legislator(@legislator)
+      comms.should be_an_instance_of(Array)
+      comms[0].should be_an_instance_of(Sunlight::Committee)
+    end
+
+    it "should return nil if no committees are found" do
+      Sunlight::Base.should_receive(:get_json_data).and_return(nil)
+
+      comms = Sunlight::Committee.all_for_legislator(@legislator)
+      comms.should be_nil
+    end
+  end
 end

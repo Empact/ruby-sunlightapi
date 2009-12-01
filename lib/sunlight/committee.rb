@@ -60,7 +60,24 @@ module Sunlight
           Committee.new(committee["committee"])
         end
       end
-      
+    end
+
+    #
+    # Usage:
+    #   Sunlight::Committee.all_for_legislator(Sunlight::Legislator.find(...))
+    #
+    # Returns:
+    #
+    # An array of Committees for that legislator
+    #
+    def self.all_for_legislator(legislator)
+      url = Sunlight::Base.construct_url("committees.allForLegislator", {:bioguide_id => legislator.bioguide_id})
+
+      if result = Sunlight::Base.get_json_data(url)
+        result["response"]["committees"].map do |committee|
+          Sunlight::Committee.new(committee["committee"])
+        end
+      end
     end
 
   end # class Committee

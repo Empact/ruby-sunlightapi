@@ -44,8 +44,6 @@ describe Sunlight::Legislator do
   end
   
   describe "#committees" do
-    
-    
     it "should return an array of Committees with subarrays for subcommittees" do
       @example_committee = {"chamber" => "Joint", "id" => "JSPR", "name" => "Joint Committee on Printing", 
                                                                                   "members" => [{"legislator" => {"state" => "GA"}}],
