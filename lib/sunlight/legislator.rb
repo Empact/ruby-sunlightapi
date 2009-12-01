@@ -177,7 +177,7 @@ module Sunlight
     
     # Convenience method for getting out the youtube_id from the youtube_url
     def youtube_id
-      /http:\/\/(?:www\.)?youtube\.com\/(?:user\/)?(.*?)\/?$/.match(youtube_url)[1] unless youtube_url.nil?
+      %r{http://(?:www\.)?youtube\.com/(?:user/)?(.*?)/?$}.match(youtube_url)[1] if youtube_url
     end
     
     # Get the committees the Legislator sits on
