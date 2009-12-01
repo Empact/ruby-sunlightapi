@@ -162,7 +162,8 @@ module Sunlight
     attr_accessor :title, :firstname, :middlename, :lastname, :name_suffix, :nickname,
                   :party, :state, :district, :gender, :phone, :fax, :website, :webform,
                   :email, :congress_office, :bioguide_id, :votesmart_id, :fec_id,
-                  :govtrack_id, :crp_id, :event_id, :congresspedia_url, :youtube_url,
+                  :govtrack_id, :crp_id, :event_id, :eventful_id, :sunlight_old_id,
+                  :congresspedia_url, :youtube_url,
                   :twitter_id, :fuzzy_score, :in_office, :senate_class, :birthdate
 
     # Takes in a hash where the keys are strings (the format passed in by the JSON parser)
