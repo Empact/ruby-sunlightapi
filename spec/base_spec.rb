@@ -38,9 +38,6 @@ describe Sunlight::Base do
       
       lambda {Sunlight::Base.construct_url("test.method", {})}.should raise_error
     end
-    
-    
-
   end
 
   describe "#get_json_data" do

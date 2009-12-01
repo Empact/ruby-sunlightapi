@@ -80,7 +80,7 @@ module Sunlight
       #
       # A Legislator that matches the conditions, if there is only one match
       # nil, if none is found
-      # raises Sunlight::MultipleLegislatorsError if there are multiple matches
+      # raises Sunlight::MultipleLegislatorsReturnedError if there are multiple matches
       #
       # Usage:
       #

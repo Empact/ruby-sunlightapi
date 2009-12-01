@@ -181,6 +181,16 @@ describe Sunlight::Legislator do
         legislator.website.should == "http://price.house.gov/"
       end
     end
+
+    context "when there are multiple corresponding legislators" do
+      it "should raise Sunlight::MultipleLegislatorsReturnedError" do
+        # Yes, this test is lame.
+        Sunlight::Legislator.should_receive(:get_json_data).and_raise(Sunlight::MultipleLegislatorsReturnedError)
+        proc {
+          Sunlight::Legislator.find(:state => 'NC')
+        }.should raise_error(Sunlight::MultipleLegislatorsReturnedError)
+      end
+    end
   end
   
   describe "#all_in_zipcode" do
